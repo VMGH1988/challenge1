@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+<script src="https://js.pusher.com/8.0.1/pusher.min.js"></script>
+
+<body>
+
+<canvas id="myChart" style="width:100%;max-width:600px"></canvas>
+
+
+<button id="miEnlace"href="http://127.0.0.1:8000/server3.php">hola</button>
+
+<script>
+     
+
+const enlace = document.getElementById("miEnlace");
+     enlace.href="#";
+     enlace.addEventListener('click', function(){
+        window.open('http://127.0.0.1:8000/server3.php','_blank');
+     });
+
+
+
+
+
+const xValues = ["Italy", "France", "Spain", "USA", "Argentina"];
+    let yValues = [55, 49, 44, 24, 15];
+    const barColors = ["red", "green","blue","orange","brown"];
+  const myChart = new Chart("myChart", {
+  type: "pie",
+  data: {
+    labels: xValues,
+    datasets: [{
+      backgroundColor: barColors,
+      data: yValues
+    }]
+  },
+  options: {
+    title: {
+      display: true,
+      text: "World Wide Wine Production"
+    }
+  }
+});
+
+    const pusher = new Pusher(
+        "a2174ecd73aba294c17f", // Replace with 'key' from dashboard
+        {
+            cluster: "eu", // Replace with 'cluster' from dashboard
+            forceTLS: true,
+        }
+    );
+
+    const channel = pusher.subscribe("quesito");
+    channel.bind("new-quesitos", (datos) => {
+       // console.log(datos);
+        for (let i = 0; i < datos.length ; i++) {
+            //myChart.data.datasets[0].data[i] += datos[i];
+            myChart.data.datasets[0].data[i] += datos[i];
+
+        }
+        myChart.update();
+    });
+
+
+</script>
+
+</body>
+</html>
